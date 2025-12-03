@@ -9,6 +9,45 @@
 
 #define DISP_BUF_SIZE (240 * 240)
 
+/*Bouncing ball variables*/
+static lv_obj_t * ball = NULL;
+static int ball_x = 120;  /*Start at center*/
+static int ball_y = 120;
+static int ball_vx = 3;   /*Velocity in pixels per frame*/
+static int ball_vy = 2;
+#define BALL_SIZE 20
+#define SCREEN_WIDTH 240
+#define SCREEN_HEIGHT 240
+
+/*Timer callback to update ball position*/
+static void ball_anim_timer(lv_timer_t * timer)
+{
+    if(ball == NULL) return;
+    
+    /*Update position*/
+    ball_x += ball_vx;
+    ball_y += ball_vy;
+    
+    /*Bounce off horizontal walls*/
+    if(ball_x <= BALL_SIZE/2 || ball_x >= SCREEN_WIDTH - BALL_SIZE/2) {
+        ball_vx = -ball_vx;
+        /*Clamp position to prevent going out of bounds*/
+        if(ball_x < BALL_SIZE/2) ball_x = BALL_SIZE/2;
+        if(ball_x > SCREEN_WIDTH - BALL_SIZE/2) ball_x = SCREEN_WIDTH - BALL_SIZE/2;
+    }
+    
+    /*Bounce off vertical walls*/
+    if(ball_y <= BALL_SIZE/2 || ball_y >= SCREEN_HEIGHT - BALL_SIZE/2) {
+        ball_vy = -ball_vy;
+        /*Clamp position to prevent going out of bounds*/
+        if(ball_y < BALL_SIZE/2) ball_y = BALL_SIZE/2;
+        if(ball_y > SCREEN_HEIGHT - BALL_SIZE/2) ball_y = SCREEN_HEIGHT - BALL_SIZE/2;
+    }
+    
+    /*Update ball position*/
+    lv_obj_set_pos(ball, ball_x - BALL_SIZE/2, ball_y - BALL_SIZE/2);
+}
+
 int main(void)
 {
     /*LittlevGL init*/
@@ -55,6 +94,18 @@ int main(void)
     /*Create a Demo*/
     lv_demo_widgets();
 #endif
+
+    /*Create a bouncing ball*/
+    ball = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(ball, BALL_SIZE, BALL_SIZE);
+    lv_obj_set_pos(ball, ball_x - BALL_SIZE/2, ball_y - BALL_SIZE/2);
+    lv_obj_set_style_radius(ball, LV_RADIUS_CIRCLE, 0);  /*Make it perfectly circular*/
+    lv_obj_set_style_bg_color(ball, lv_color_hex(0xFF0000), 0);  /*Set red color*/
+    lv_obj_set_style_bg_opa(ball, LV_OPA_COVER, 0);  /*Make it opaque*/
+    lv_obj_clear_flag(ball, LV_OBJ_FLAG_SCROLLABLE);  /*Disable scrolling for better performance*/
+    
+    /*Create animation timer (runs every 16ms for ~60fps)*/
+    lv_timer_create(ball_anim_timer, 16, NULL);
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
         lv_timer_handler();
