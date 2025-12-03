@@ -6,46 +6,170 @@
 #include <pthread.h>
 #include <time.h>
 #include <sys/time.h>
+#include <stdlib.h>
 
 #define DISP_BUF_SIZE (240 * 240)
 
-/*Bouncing ball variables*/
-static lv_obj_t * ball = NULL;
-static int ball_x = 120;  /*Start at center*/
-static int ball_y = 120;
-static int ball_vx = 3;   /*Velocity in pixels per frame*/
-static int ball_vy = 2;
-#define BALL_SIZE 20
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 240
+#define NUM_SNOWFLAKES 30
+#define GROUND_HEIGHT 40
 
-/*Timer callback to update ball position*/
-static void ball_anim_timer(lv_timer_t * timer)
+/*Snowflake structure*/
+typedef struct {
+    lv_obj_t * obj;
+    int x;
+    int y;
+    int speed;
+    int size;
+} snowflake_t;
+
+static snowflake_t snowflakes[NUM_SNOWFLAKES];
+static lv_obj_t * sky_bg = NULL;
+static lv_obj_t * ground = NULL;
+
+/*Function to create a snowman*/
+static void create_snowman(int x, int y)
 {
-    if(ball == NULL) return;
+    lv_obj_t * part;
     
-    /*Update position*/
-    ball_x += ball_vx;
-    ball_y += ball_vy;
+    /*Bottom circle (largest)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 50, 50);
+    lv_obj_set_pos(part, x - 25, y - 50);
+    lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Bounce off horizontal walls*/
-    if(ball_x <= BALL_SIZE/2 || ball_x >= SCREEN_WIDTH - BALL_SIZE/2) {
-        ball_vx = -ball_vx;
-        /*Clamp position to prevent going out of bounds*/
-        if(ball_x < BALL_SIZE/2) ball_x = BALL_SIZE/2;
-        if(ball_x > SCREEN_WIDTH - BALL_SIZE/2) ball_x = SCREEN_WIDTH - BALL_SIZE/2;
+    /*Middle circle*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 40, 40);
+    lv_obj_set_pos(part, x - 20, y - 90);
+    lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Top circle (head)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 30, 30);
+    lv_obj_set_pos(part, x - 15, y - 120);
+    lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Left eye*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x - 8, y - 115);
+    lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Right eye*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x + 4, y - 115);
+    lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Carrot nose (triangle approximated as small rectangle)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 6, 4);
+    lv_obj_set_pos(part, x - 3, y - 110);
+    lv_obj_set_style_radius(part, 2, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFF8C00), 0);  /*Orange*/
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Button 1 (top)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x - 2, y - 85);
+    lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Button 2 (middle)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x - 2, y - 75);
+    lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Button 3 (bottom)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x - 2, y - 65);
+    lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Hat brim*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 35, 5);
+    lv_obj_set_pos(part, x - 17, y - 125);
+    lv_obj_set_style_radius(part, 2, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Hat top*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, 20, 15);
+    lv_obj_set_pos(part, x - 10, y - 140);
+    lv_obj_set_style_radius(part, 2, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+}
+
+/*Timer callback to update snowflake positions*/
+static void snow_anim_timer(lv_timer_t * timer)
+{
+    for(int i = 0; i < NUM_SNOWFLAKES; i++) {
+        if(snowflakes[i].obj == NULL) continue;
+        
+        /*Move snowflake down*/
+        snowflakes[i].y += snowflakes[i].speed;
+        
+        /*Add slight horizontal drift*/
+        snowflakes[i].x += (snowflakes[i].speed % 3) - 1;
+        
+        /*Reset if snowflake reaches bottom*/
+        if(snowflakes[i].y > SCREEN_HEIGHT - GROUND_HEIGHT) {
+            snowflakes[i].y = -snowflakes[i].size;
+            snowflakes[i].x = (snowflakes[i].x % SCREEN_WIDTH) + (rand() % SCREEN_WIDTH);
+        }
+        
+        /*Wrap around horizontally*/
+        if(snowflakes[i].x < 0) snowflakes[i].x = SCREEN_WIDTH;
+        if(snowflakes[i].x > SCREEN_WIDTH) snowflakes[i].x = 0;
+        
+        /*Update snowflake position*/
+        lv_obj_set_pos(snowflakes[i].obj, snowflakes[i].x - snowflakes[i].size/2, 
+                       snowflakes[i].y - snowflakes[i].size/2);
     }
-    
-    /*Bounce off vertical walls*/
-    if(ball_y <= BALL_SIZE/2 || ball_y >= SCREEN_HEIGHT - BALL_SIZE/2) {
-        ball_vy = -ball_vy;
-        /*Clamp position to prevent going out of bounds*/
-        if(ball_y < BALL_SIZE/2) ball_y = BALL_SIZE/2;
-        if(ball_y > SCREEN_HEIGHT - BALL_SIZE/2) ball_y = SCREEN_HEIGHT - BALL_SIZE/2;
-    }
-    
-    /*Update ball position*/
-    lv_obj_set_pos(ball, ball_x - BALL_SIZE/2, ball_y - BALL_SIZE/2);
 }
 
 int main(void)
@@ -90,22 +214,47 @@ int main(void)
     lv_indev_set_cursor(mouse_indev, cursor_obj);             /*Connect the image  object to the driver*/
 #endif
     
-#if 1
-    /*Create a Demo*/
-    lv_demo_widgets();
-#endif
-
-    /*Create a bouncing ball*/
-    ball = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(ball, BALL_SIZE, BALL_SIZE);
-    lv_obj_set_pos(ball, ball_x - BALL_SIZE/2, ball_y - BALL_SIZE/2);
-    lv_obj_set_style_radius(ball, LV_RADIUS_CIRCLE, 0);  /*Make it perfectly circular*/
-    lv_obj_set_style_bg_color(ball, lv_color_hex(0xFF0000), 0);  /*Set red color*/
-    lv_obj_set_style_bg_opa(ball, LV_OPA_COVER, 0);  /*Make it opaque*/
-    lv_obj_clear_flag(ball, LV_OBJ_FLAG_SCROLLABLE);  /*Disable scrolling for better performance*/
+    /*Create snow scene background - dark blue sky*/
+    sky_bg = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(sky_bg, SCREEN_WIDTH, SCREEN_HEIGHT - GROUND_HEIGHT);
+    lv_obj_set_pos(sky_bg, 0, 0);
+    lv_obj_set_style_bg_color(sky_bg, lv_color_hex(0x1a1a2e), 0);  /*Dark blue sky*/
+    lv_obj_set_style_bg_opa(sky_bg, LV_OPA_COVER, 0);
+    lv_obj_clear_flag(sky_bg, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Create animation timer (runs every 16ms for ~60fps)*/
-    lv_timer_create(ball_anim_timer, 16, NULL);
+    /*Create snow ground*/
+    ground = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(ground, SCREEN_WIDTH, GROUND_HEIGHT);
+    lv_obj_set_pos(ground, 0, SCREEN_HEIGHT - GROUND_HEIGHT);
+    lv_obj_set_style_bg_color(ground, lv_color_hex(0xFFFFFF), 0);  /*White snow*/
+    lv_obj_set_style_bg_opa(ground, LV_OPA_COVER, 0);
+    lv_obj_clear_flag(ground, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Initialize snowflakes*/
+    srand(time(NULL));
+    for(int i = 0; i < NUM_SNOWFLAKES; i++) {
+        snowflakes[i].size = 2 + (rand() % 4);  /*Size between 2-5 pixels*/
+        snowflakes[i].x = rand() % SCREEN_WIDTH;
+        snowflakes[i].y = -(rand() % SCREEN_HEIGHT);  /*Start at random heights above screen*/
+        snowflakes[i].speed = 1 + (rand() % 3);  /*Speed between 1-3 pixels per frame*/
+        
+        /*Create snowflake object*/
+        snowflakes[i].obj = lv_obj_create(lv_scr_act());
+        lv_obj_set_size(snowflakes[i].obj, snowflakes[i].size, snowflakes[i].size);
+        lv_obj_set_pos(snowflakes[i].obj, snowflakes[i].x - snowflakes[i].size/2, 
+                       snowflakes[i].y - snowflakes[i].size/2);
+        lv_obj_set_style_radius(snowflakes[i].obj, LV_RADIUS_CIRCLE, 0);
+        lv_obj_set_style_bg_color(snowflakes[i].obj, lv_color_hex(0xFFFFFF), 0);  /*White*/
+        lv_obj_set_style_bg_opa(snowflakes[i].obj, LV_OPA_COVER, 0);
+        lv_obj_set_style_border_width(snowflakes[i].obj, 0, 0);  /*No border*/
+        lv_obj_clear_flag(snowflakes[i].obj, LV_OBJ_FLAG_SCROLLABLE);
+    }
+    
+    /*Create snowman on the ground (centered horizontally)*/
+    create_snowman(SCREEN_WIDTH / 2, SCREEN_HEIGHT - GROUND_HEIGHT);
+    
+    /*Create animation timer (runs every 50ms for smooth animation)*/
+    lv_timer_create(snow_anim_timer, 50, NULL);
     /*Handle LitlevGL tasks (tickless mode)*/
     while(1) {
         lv_timer_handler();
