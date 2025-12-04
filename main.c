@@ -12,7 +12,7 @@
 
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 240
-#define NUM_SNOWFLAKES 0  /*No snowflakes in summer*/
+#define NUM_SNOWFLAKES 60
 #define GROUND_HEIGHT 40
 
 /*Snowflake structure*/
@@ -36,7 +36,7 @@ static void create_snowman(int x, int y, float scale)
     /*Bottom circle (largest)*/
     part = lv_obj_create(lv_scr_act());
     lv_obj_set_size(part, (int)(50 * scale), (int)(50 * scale));
-    lv_obj_set_pos(part, x - (int)(25 * scale), y - (int)(50 * scale));
+    lv_obj_set_pos(part, x - (int)(25 * scale), y - (int)(35 * scale));
     lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
@@ -46,18 +46,18 @@ static void create_snowman(int x, int y, float scale)
     /*Middle circle*/
     part = lv_obj_create(lv_scr_act());
     lv_obj_set_size(part, (int)(40 * scale), (int)(40 * scale));
-    lv_obj_set_pos(part, x - (int)(20 * scale), y - (int)(90 * scale));
+    lv_obj_set_pos(part, x - (int)(20 * scale), y - (int)(65 * scale));
     lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Left arm (stick) - positioned diagonally - made thicker and more visible*/
+    /*Left arm (stick) - positioned diagonally*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(22 * scale));
-    lv_obj_set_pos(part, x - (int)(22 * scale), y - (int)(86 * scale));
-    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_size(part, 3, 20);
+    lv_obj_set_pos(part, x - 23, y - 60);
+    lv_obj_set_style_radius(part, 1, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x8B4513), 0);  /*Brown*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
@@ -65,19 +65,19 @@ static void create_snowman(int x, int y, float scale)
     
     /*Left arm extension (to make it look longer and angled)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(14 * scale));
-    lv_obj_set_pos(part, x - (int)(32 * scale), y - (int)(77 * scale));
-    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_size(part, 3, 12);
+    lv_obj_set_pos(part, x - 30, y - 53);
+    lv_obj_set_style_radius(part, 1, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x8B4513), 0);  /*Brown*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Right arm (stick) - positioned diagonally - made thicker and more visible*/
+    /*Right arm (stick) - positioned diagonally*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(22 * scale));
-    lv_obj_set_pos(part, x + (int)(18 * scale), y - (int)(86 * scale));
-    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_size(part, 3, 20);
+    lv_obj_set_pos(part, x + 20, y - 60);
+    lv_obj_set_style_radius(part, 1, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x8B4513), 0);  /*Brown*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
@@ -85,9 +85,9 @@ static void create_snowman(int x, int y, float scale)
     
     /*Right arm extension (to make it look longer and angled)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(14 * scale));
-    lv_obj_set_pos(part, x + (int)(28 * scale), y - (int)(77 * scale));
-    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_size(part, 3, 12);
+    lv_obj_set_pos(part, x + 27, y - 53);
+    lv_obj_set_style_radius(part, 1, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x8B4513), 0);  /*Brown*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
@@ -95,68 +95,68 @@ static void create_snowman(int x, int y, float scale)
     
     /*Top circle (head)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(30 * scale), (int)(30 * scale));
-    lv_obj_set_pos(part, x - (int)(15 * scale), y - (int)(120 * scale));
+    lv_obj_set_size(part, 30, 30);
+    lv_obj_set_pos(part, x - 15, y - 85);
     lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Left eye - scaled and positioned correctly on head*/
+    /*Left eye*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(4 * scale));
-    lv_obj_set_pos(part, x - (int)(8 * scale), y - (int)(115 * scale));
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x - 8, y - 80);
     lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Right eye - scaled and positioned correctly on head*/
+    /*Right eye*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(4 * scale));
-    lv_obj_set_pos(part, x + (int)(4 * scale), y - (int)(115 * scale));
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x + 4, y - 80);
     lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Carrot nose (triangle approximated as small rectangle) - scaled*/
+    /*Carrot nose (triangle approximated as small rectangle)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(6 * scale), (int)(4 * scale));
-    lv_obj_set_pos(part, x - (int)(3 * scale), y - (int)(110 * scale));
-    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_size(part, 6, 4);
+    lv_obj_set_pos(part, x - 3, y - 75);
+    lv_obj_set_style_radius(part, 2, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0xFF8C00), 0);  /*Orange*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Button 1 (top) - scaled*/
+    /*Button 1 (top)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(4 * scale));
-    lv_obj_set_pos(part, x - (int)(2 * scale), y - (int)(85 * scale));
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x - 2, y - 60);
     lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Button 2 (middle) - scaled*/
+    /*Button 2 (middle)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(4 * scale));
-    lv_obj_set_pos(part, x - (int)(2 * scale), y - (int)(75 * scale));
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x - 2, y - 50);
     lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Button 3 (bottom) - scaled*/
+    /*Button 3 (bottom)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(4 * scale), (int)(4 * scale));
-    lv_obj_set_pos(part, x - (int)(2 * scale), y - (int)(65 * scale));
+    lv_obj_set_size(part, 4, 4);
+    lv_obj_set_pos(part, x - 2, y - 40);
     lv_obj_set_style_radius(part, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
@@ -165,9 +165,9 @@ static void create_snowman(int x, int y, float scale)
     
     /*Hat brim*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(35 * scale), (int)(5 * scale));
-    lv_obj_set_pos(part, x - (int)(17 * scale), y - (int)(125 * scale));
-    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_size(part, 35, 5);
+    lv_obj_set_pos(part, x - 17, y - 90);
+    lv_obj_set_style_radius(part, 2, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
@@ -175,24 +175,24 @@ static void create_snowman(int x, int y, float scale)
     
     /*Hat top*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(20 * scale), (int)(15 * scale));
-    lv_obj_set_pos(part, x - (int)(10 * scale), y - (int)(140 * scale));
-    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_size(part, 20, 15);
+    lv_obj_set_pos(part, x - 10, y - 105);
+    lv_obj_set_style_radius(part, 2, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x000000), 0);
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
 }
 
-/*Function to create a pine tree*/
+/*Function to create a pine tree with snow*/
 static void create_tree(int x, int y, float scale)
 {
     lv_obj_t * part;
     
     /*Tree trunk (brown rectangle)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(8 * scale), (int)(25 * scale));
-    lv_obj_set_pos(part, x - (int)(4 * scale), y - (int)(25 * scale));
+    lv_obj_set_size(part, (int)(8 * scale), (int)(18 * scale));
+    lv_obj_set_pos(part, x - (int)(4 * scale), y - (int)(18 * scale));
     lv_obj_set_style_radius(part, 1, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x8B4513), 0);  /*Brown*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
@@ -201,40 +201,100 @@ static void create_tree(int x, int y, float scale)
     
     /*Bottom foliage layer (largest - pine tree base)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(55 * scale), (int)(35 * scale));
-    lv_obj_set_pos(part, x - (int)(27 * scale), y - (int)(60 * scale));
+    lv_obj_set_size(part, (int)(55 * scale), (int)(25 * scale));
+    lv_obj_set_pos(part, x - (int)(27 * scale), y - (int)(43 * scale));
     lv_obj_set_style_radius(part, 0, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x228B22), 0);  /*Forest green*/
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Snow on bottom layer (left side)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, (int)(20 * scale), (int)(9 * scale));
+    lv_obj_set_pos(part, x - (int)(27 * scale), y - (int)(43 * scale));
+    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);  /*White snow*/
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Snow on bottom layer (right side)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, (int)(18 * scale), (int)(8 * scale));
+    lv_obj_set_pos(part, x + (int)(10 * scale), y - (int)(41 * scale));
+    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);  /*White snow*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
     /*Middle foliage layer*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(45 * scale), (int)(32 * scale));
-    lv_obj_set_pos(part, x - (int)(22 * scale), y - (int)(92 * scale));
+    lv_obj_set_size(part, (int)(45 * scale), (int)(23 * scale));
+    lv_obj_set_pos(part, x - (int)(22 * scale), y - (int)(66 * scale));
     lv_obj_set_style_radius(part, 0, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x228B22), 0);  /*Forest green*/
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Snow on middle layer (left side)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, (int)(16 * scale), (int)(7 * scale));
+    lv_obj_set_pos(part, x - (int)(22 * scale), y - (int)(66 * scale));
+    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);  /*White snow*/
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Snow on middle layer (right side)*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, (int)(14 * scale), (int)(6 * scale));
+    lv_obj_set_pos(part, x + (int)(9 * scale), y - (int)(64 * scale));
+    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);  /*White snow*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
     /*Upper middle foliage layer*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(38 * scale), (int)(28 * scale));
-    lv_obj_set_pos(part, x - (int)(19 * scale), y - (int)(120 * scale));
+    lv_obj_set_size(part, (int)(38 * scale), (int)(20 * scale));
+    lv_obj_set_pos(part, x - (int)(19 * scale), y - (int)(86 * scale));
     lv_obj_set_style_radius(part, 0, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x228B22), 0);  /*Forest green*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
     
+    /*Snow on upper middle layer*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, (int)(12 * scale), (int)(5 * scale));
+    lv_obj_set_pos(part, x - (int)(19 * scale), y - (int)(86 * scale));
+    lv_obj_set_style_radius(part, (int)(2 * scale), 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);  /*White snow*/
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
     /*Top foliage layer (smallest - pine tree tip)*/
     part = lv_obj_create(lv_scr_act());
-    lv_obj_set_size(part, (int)(32 * scale), (int)(25 * scale));
-    lv_obj_set_pos(part, x - (int)(16 * scale), y - (int)(145 * scale));
+    lv_obj_set_size(part, (int)(32 * scale), (int)(18 * scale));
+    lv_obj_set_pos(part, x - (int)(16 * scale), y - (int)(104 * scale));
     lv_obj_set_style_radius(part, 0, 0);
     lv_obj_set_style_bg_color(part, lv_color_hex(0x228B22), 0);  /*Forest green*/
+    lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(part, 0, 0);
+    lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
+    
+    /*Snow on top layer*/
+    part = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(part, (int)(10 * scale), (int)(4 * scale));
+    lv_obj_set_pos(part, x - (int)(16 * scale), y - (int)(104 * scale));
+    lv_obj_set_style_radius(part, 2, 0);
+    lv_obj_set_style_bg_color(part, lv_color_hex(0xFFFFFF), 0);  /*White snow*/
     lv_obj_set_style_bg_opa(part, LV_OPA_COVER, 0);
     lv_obj_set_style_border_width(part, 0, 0);
     lv_obj_clear_flag(part, LV_OBJ_FLAG_SCROLLABLE);
@@ -416,11 +476,11 @@ int main(void)
     lv_indev_set_cursor(mouse_indev, cursor_obj);             /*Connect the image  object to the driver*/
 #endif
     
-    /*Create summer scene background - bright summer sky*/
+    /*Create snow scene background - bright blue sky*/
     sky_bg = lv_obj_create(lv_scr_act());
     lv_obj_set_size(sky_bg, SCREEN_WIDTH, SCREEN_HEIGHT - GROUND_HEIGHT);
     lv_obj_set_pos(sky_bg, 0, 0);
-    lv_obj_set_style_bg_color(sky_bg, lv_color_hex(0x87CEEB), 0);  /*Bright summer sky blue*/
+    lv_obj_set_style_bg_color(sky_bg, lv_color_hex(0x87CEEB), 0);  /*Sky blue*/
     lv_obj_set_style_bg_opa(sky_bg, LV_OPA_COVER, 0);
     lv_obj_clear_flag(sky_bg, LV_OBJ_FLAG_SCROLLABLE);
     
@@ -510,28 +570,60 @@ int main(void)
     lv_obj_set_style_border_width(cloud, 0, 0);
     lv_obj_clear_flag(cloud, LV_OBJ_FLAG_SCROLLABLE);
     
-    /*Create grass ground*/
+    /*Create snow ground*/
     ground = lv_obj_create(lv_scr_act());
     lv_obj_set_size(ground, SCREEN_WIDTH, GROUND_HEIGHT);
     lv_obj_set_pos(ground, 0, SCREEN_HEIGHT - GROUND_HEIGHT);
-    lv_obj_set_style_bg_color(ground, lv_color_hex(0x228B22), 0);  /*Forest green grass*/
+    lv_obj_set_style_bg_color(ground, lv_color_hex(0xFFFFFF), 0);  /*White snow*/
     lv_obj_set_style_bg_opa(ground, LV_OPA_COVER, 0);
     lv_obj_clear_flag(ground, LV_OBJ_FLAG_SCROLLABLE);
     
+    /*Add snow drifts on the ground for more snowy effect*/
+    lv_obj_t * drift;
+    drift = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(drift, 40, 8);
+    lv_obj_set_pos(drift, 20, SCREEN_HEIGHT - GROUND_HEIGHT - 3);
+    lv_obj_set_style_radius(drift, 4, 0);
+    lv_obj_set_style_bg_color(drift, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_bg_opa(drift, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(drift, 0, 0);
+    lv_obj_clear_flag(drift, LV_OBJ_FLAG_SCROLLABLE);
+    
+    drift = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(drift, 35, 6);
+    lv_obj_set_pos(drift, 100, SCREEN_HEIGHT - GROUND_HEIGHT - 2);
+    lv_obj_set_style_radius(drift, 3, 0);
+    lv_obj_set_style_bg_color(drift, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_bg_opa(drift, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(drift, 0, 0);
+    lv_obj_clear_flag(drift, LV_OBJ_FLAG_SCROLLABLE);
+    
+    drift = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(drift, 30, 7);
+    lv_obj_set_pos(drift, 180, SCREEN_HEIGHT - GROUND_HEIGHT - 3);
+    lv_obj_set_style_radius(drift, 3, 0);
+    lv_obj_set_style_bg_color(drift, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_bg_opa(drift, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(drift, 0, 0);
+    lv_obj_clear_flag(drift, LV_OBJ_FLAG_SCROLLABLE);
+    
     /*Create multiple trees on the ground - varying sizes for depth*/
-    create_tree(30, SCREEN_HEIGHT - GROUND_HEIGHT, 0.5f);  /*Far left, smaller*/
-    create_tree(50, SCREEN_HEIGHT - GROUND_HEIGHT, 0.6f);  /*Left side*/
-    create_tree(75, SCREEN_HEIGHT - GROUND_HEIGHT, 0.55f); /*Left-center, medium*/
-    create_tree(105, SCREEN_HEIGHT - GROUND_HEIGHT, 0.65f); /*Center-left, slightly larger*/
-    create_tree(135, SCREEN_HEIGHT - GROUND_HEIGHT, 0.58f); /*Center, medium*/
-    create_tree(160, SCREEN_HEIGHT - GROUND_HEIGHT, 0.52f); /*Center-right, smaller*/
-    create_tree(200, SCREEN_HEIGHT - GROUND_HEIGHT, 0.48f); /*Right side, smaller*/
+    create_tree(30, SCREEN_HEIGHT - GROUND_HEIGHT, 0.4f);  /*Far left, smallest*/
+    create_tree(50, SCREEN_HEIGHT - GROUND_HEIGHT, 0.55f);  /*Left side, small*/
+    create_tree(75, SCREEN_HEIGHT - GROUND_HEIGHT, 0.65f); /*Left-center, medium*/
+    create_tree(105, SCREEN_HEIGHT - GROUND_HEIGHT, 0.75f); /*Center-left, large*/
+    create_tree(135, SCREEN_HEIGHT - GROUND_HEIGHT, 0.7f); /*Center, large*/
+    create_tree(160, SCREEN_HEIGHT - GROUND_HEIGHT, 0.6f); /*Center-right, medium*/
+    create_tree(200, SCREEN_HEIGHT - GROUND_HEIGHT, 0.5f); /*Right side, small*/
     create_tree(220, SCREEN_HEIGHT - GROUND_HEIGHT, 0.45f); /*Far right, smallest*/
+    
+    /*Create snowman on the ground (right side) - smaller to appear far*/
+    create_snowman(180, SCREEN_HEIGHT - GROUND_HEIGHT, 0.6f);
     
     /*Create fireplace with logs - positioned in center-left*/
     create_fireplace(90, SCREEN_HEIGHT - GROUND_HEIGHT, 0.7f);
     
-    /*Initialize snowflakes - disabled for summer scene*/
+    /*Initialize snowflakes - created last so they appear in front*/
     srand(time(NULL));
     for(int i = 0; i < NUM_SNOWFLAKES; i++) {
         snowflakes[i].size = 2 + (rand() % 7);  /*Size between 2-8 pixels (more variety)*/
